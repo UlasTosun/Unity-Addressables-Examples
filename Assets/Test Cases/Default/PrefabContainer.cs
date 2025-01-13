@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 
-public class PrefabContainer : MonoBehaviour {
+public class PrefabContainer : MonoBehaviour, IPrefabLoader {
 
     [SerializeField] private List<GameObject> _prefabs = new();
 

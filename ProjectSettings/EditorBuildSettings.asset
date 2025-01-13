@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Test Cases/Default/Default Case.unity
     guid: 4de19f048dbbfda478a048db0611e991
+  - enabled: 1
+    path: Assets/Test Cases/Addressables (Asset Reference)/Addressables (Asset Reference).unity
+    guid: 6cd4a35df6317fc40b1eea072f91171b
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 3199c85da73e2b64ea23edb49104b03c,
       type: 2}
