@@ -9,15 +9,7 @@ public class AssetCreator {
 
     private string _rootPath;
 
-    private List<Texture2D> _textureSources = new();
-    private int _textureCount = 0;
 
-    private List<Mesh> _meshSources = new();
-    private int _meshCount = 0;
-
-    private int _materialCount = 0;
-    private int _prefabCount = 0;
-    private int _compoundPrefabCount = 0;
 
 
 
@@ -28,59 +20,22 @@ public class AssetCreator {
 
 
 
-    public AssetCreator SetTextures(List<Texture2D> source, int count) {
-        _textureSources = source;
-        _textureCount = count;
-        return this;
-    }
-
-
-
-    public AssetCreator SetMaterials(int count) {
-        _materialCount = count;
-        return this;
-    }
-
-
-
-    public AssetCreator SetMeshes(List<Mesh> source, int count) {
-        _meshSources = source;
-        _meshCount = count;
-        return this;
-    }
-
-
-
-    public AssetCreator SetPrefabs(int count) {
-        _prefabCount = count;
-        return this;
-    }
-
-
-
-    public AssetCreator SetCompoundPrefabs(int count) {
-        _compoundPrefabCount = count;
-        return this;
-    }
-
-
-
-    public void Create() {
+    public void Create(int count, List<Texture2D> textureSources, List<Mesh> meshSources) {
         Debug.Log("Creating assets...");
 
-        CreateTextures();
+        CreateTextures(textureSources, count);
         AssetDatabase.Refresh();
 
-        CreateMaterials();
+        CreateMaterials(count);
         AssetDatabase.Refresh();
 
-        CreateMeshes(); 
+        CreateMeshes(meshSources, count); 
         AssetDatabase.Refresh();
 
-        CreatePrefabs();
+        CreatePrefabs(count);
         AssetDatabase.Refresh();
 
-        CreateCompoundPrefabs();
+        CreateCompoundPrefabs(count);
         AssetDatabase.Refresh();
 
         Debug.Log("Assets created successfully.");
@@ -102,28 +57,27 @@ public class AssetCreator {
 
 
 
-    private void CreateTextures() {
+    private void CreateTextures(List<Texture2D> textureSources, int count) {
         string path = _rootPath + "/Textures";
         Directory.CreateDirectory(path);
 
-        for (int i = 0; i < _textureCount; i++) {
-            int source = Random.Range(0, _textureSources.Count);
-            File.WriteAllBytes(path + "/Texture_" + i + ".png", _textureSources[source].EncodeToPNG());
+        for (int i = 0; i < count; i++) {
+            int source = Random.Range(0, textureSources.Count);
+            File.WriteAllBytes(path + "/Texture_" + i + ".png", textureSources[source].EncodeToPNG());
         }
     }
 
 
 
-    private void CreateMaterials() {
+    private void CreateMaterials(int count) {
         string path = _rootPath + "/Materials";
         Directory.CreateDirectory(path);
 
-        for (int i = 0; i < _materialCount; i++) {
+        for (int i = 0; i < count; i++) {
             Material material = new (Shader.Find("Universal Render Pipeline/Lit"));
 
-            // Load and assign a random texture from the textures folder
-            int textureIndex = Random.Range(0, _textureCount);
-            Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(_rootPath + "/Textures/Texture_" + textureIndex + ".png");
+            // Load and assign a texture from the textures folder
+            Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(_rootPath + "/Textures/Texture_" + i + ".png");
             material.mainTexture = texture;
             
             AssetDatabase.CreateAsset(material, path + "/Material_" + i + ".mat");
@@ -132,36 +86,34 @@ public class AssetCreator {
 
 
 
-    private void CreateMeshes() {
+    private void CreateMeshes(List<Mesh> meshSources, int count) {
         string path = _rootPath + "/Meshes";
         Directory.CreateDirectory(path);
 
-        for (int i = 0; i < _meshCount; i++) {
-            int source = Random.Range(0, _meshSources.Count);
-            Mesh mesh = Object.Instantiate(_meshSources[source]);
+        for (int i = 0; i < count; i++) {
+            int source = Random.Range(0, meshSources.Count);
+            Mesh mesh = Object.Instantiate(meshSources[source]);
             AssetDatabase.CreateAsset(mesh, path + "/Mesh_" + i + ".asset");
         }
     }
 
 
 
-    private void CreatePrefabs() {
+    private void CreatePrefabs(int count) {
         string path = _rootPath + "/Prefabs";
         Directory.CreateDirectory(path);
 
-        for (int i = 0; i < _prefabCount; i++) {
-            GameObject prefab = new GameObject("Prefab_" + i);
+        for (int i = 0; i < count; i++) {
+            GameObject prefab = new ("Prefab_" + i);
             prefab.AddComponent<MeshFilter>();
             prefab.AddComponent<MeshRenderer>();
 
             // Assign a random mesh from the meshes folder
-            int meshIndex = Random.Range(0, _meshCount);
-            Mesh mesh = AssetDatabase.LoadAssetAtPath<Mesh>(_rootPath + "/Meshes/Mesh_" + meshIndex + ".asset");
+            Mesh mesh = AssetDatabase.LoadAssetAtPath<Mesh>(_rootPath + "/Meshes/Mesh_" + i + ".asset");
             prefab.GetComponent<MeshFilter>().sharedMesh = mesh;
 
             // Assign a random material from the materials folder
-            int materialIndex = Random.Range(0, _materialCount);
-            Material material = AssetDatabase.LoadAssetAtPath<Material>(_rootPath + "/Materials/Material_" + materialIndex + ".mat");
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(_rootPath + "/Materials/Material_" + i + ".mat");
             prefab.GetComponent<MeshRenderer>().sharedMaterial = material;
 
             PrefabUtility.SaveAsPrefabAsset(prefab, path + "/Prefab_" + i + ".prefab");
@@ -171,17 +123,17 @@ public class AssetCreator {
 
 
 
-    private void CreateCompoundPrefabs() {
+    private void CreateCompoundPrefabs(int count) {
         string path = _rootPath + "/Compound Prefabs";
         Directory.CreateDirectory(path);
 
-        for (int i = 0; i < _compoundPrefabCount; i++) {
-            GameObject compoundPrefab = new GameObject("CompoundPrefab_" + i);
+        for (int i = 0; i < count; i++) {
+            GameObject compoundPrefab = new ("CompoundPrefab_" + i);
 
             // Assign a random number of prefabs to the compound prefab
             int prefabCount = Random.Range(1, 5);
             for (int j = 0; j < prefabCount; j++) {
-                int prefabIndex = Random.Range(0, _prefabCount);
+                int prefabIndex = (i + j) % count;
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(_rootPath + "/Prefabs/Prefab_" + prefabIndex + ".prefab");
                 GameObject instance = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
                 instance.transform.SetParent(compoundPrefab.transform);
