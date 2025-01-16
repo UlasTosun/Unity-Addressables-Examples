@@ -108,11 +108,11 @@ public class AssetCreator {
             prefab.AddComponent<MeshFilter>();
             prefab.AddComponent<MeshRenderer>();
 
-            // Assign a random mesh from the meshes folder
+            // Assign a mesh from the meshes folder
             Mesh mesh = AssetDatabase.LoadAssetAtPath<Mesh>(_rootPath + "/Meshes/Mesh_" + i + ".asset");
             prefab.GetComponent<MeshFilter>().sharedMesh = mesh;
 
-            // Assign a random material from the materials folder
+            // Assign a material from the materials folder
             Material material = AssetDatabase.LoadAssetAtPath<Material>(_rootPath + "/Materials/Material_" + i + ".mat");
             prefab.GetComponent<MeshRenderer>().sharedMaterial = material;
 
@@ -130,7 +130,7 @@ public class AssetCreator {
         for (int i = 0; i < count; i++) {
             GameObject compoundPrefab = new ("CompoundPrefab_" + i);
 
-            // Assign a random number of prefabs to the compound prefab
+            // Assign random number of prefabs to the compound prefab
             int prefabCount = Random.Range(1, 5);
             for (int j = 0; j < prefabCount; j++) {
                 int prefabIndex = (i + j) % count;
