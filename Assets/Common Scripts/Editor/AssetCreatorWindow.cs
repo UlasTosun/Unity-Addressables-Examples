@@ -54,25 +54,27 @@ public class AssetCreatorWindow : EditorWindow {
 
 
     private void DisplayTextures() {
-        SerializedProperty targets = new SerializedObject(this).FindProperty(nameof(_textureSources));
-        GUIContent label = new("Select textures to create assets from:");
-        EditorGUILayout.PropertyField(targets, label, true);
-        targets.serializedObject.ApplyModifiedProperties();
+        DisplayList(nameof(_textureSources), "Select textures to create assets from:");
     }
 
 
 
     private void DisplayMeshes() {
-        SerializedProperty targets = new SerializedObject(this).FindProperty(nameof(_meshSources));
-        GUIContent label = new("Select meshes to create assets from:");
-        EditorGUILayout.PropertyField(targets, label, true);
+        DisplayList(nameof(_meshSources), "Select meshes to create assets from:");
+    }
+
+
+
+    private void DisplayList(string nameOfList, string label) {
+        SerializedProperty targets = new SerializedObject(this).FindProperty(nameOfList);
+        GUIContent labelField = new(label);
+        EditorGUILayout.PropertyField(targets, labelField, true);
         targets.serializedObject.ApplyModifiedProperties();
     }
 
 
 
     private void DisplayCreateButton() {
-        
         if (DisplayButton("Create Assets", Color.green))
             _assetCreator.Create(_count, _textureSources, _meshSources);
     }

@@ -8,9 +8,11 @@ using UnityEditor;
 public class AssetCreator {
 
     private string _rootPath;
-
-
-
+    private string _textureFolder = "/Textures";
+    private string _materialFolder = "/Materials";
+    private string _meshFolder = "/Meshes";
+    private string _prefabFolder = "/Prefabs";
+    private string _compoundPrefabFolder = "/Compound Prefabs";
 
 
 
@@ -58,7 +60,7 @@ public class AssetCreator {
 
 
     private void CreateTextures(List<Texture2D> textureSources, int count) {
-        string path = _rootPath + "/Textures";
+        string path = _rootPath + _textureFolder;
         Directory.CreateDirectory(path);
 
         for (int i = 0; i < count; i++) {
@@ -70,14 +72,14 @@ public class AssetCreator {
 
 
     private void CreateMaterials(int count) {
-        string path = _rootPath + "/Materials";
+        string path = _rootPath + _materialFolder;
         Directory.CreateDirectory(path);
 
         for (int i = 0; i < count; i++) {
             Material material = new (Shader.Find("Universal Render Pipeline/Lit"));
 
             // Load and assign a texture from the textures folder
-            Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(_rootPath + "/Textures/Texture_" + i + ".png");
+            Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(_rootPath + _textureFolder + "/Texture_" + i + ".png");
             material.mainTexture = texture;
             
             AssetDatabase.CreateAsset(material, path + "/Material_" + i + ".mat");
@@ -87,7 +89,7 @@ public class AssetCreator {
 
 
     private void CreateMeshes(List<Mesh> meshSources, int count) {
-        string path = _rootPath + "/Meshes";
+        string path = _rootPath + _meshFolder;
         Directory.CreateDirectory(path);
 
         for (int i = 0; i < count; i++) {
@@ -109,11 +111,11 @@ public class AssetCreator {
             prefab.AddComponent<MeshRenderer>();
 
             // Assign a mesh from the meshes folder
-            Mesh mesh = AssetDatabase.LoadAssetAtPath<Mesh>(_rootPath + "/Meshes/Mesh_" + i + ".asset");
+            Mesh mesh = AssetDatabase.LoadAssetAtPath<Mesh>(_rootPath + _meshFolder + "/Mesh_" + i + ".asset");
             prefab.GetComponent<MeshFilter>().sharedMesh = mesh;
 
             // Assign a material from the materials folder
-            Material material = AssetDatabase.LoadAssetAtPath<Material>(_rootPath + "/Materials/Material_" + i + ".mat");
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(_rootPath + _materialFolder + "/Material_" + i + ".mat");
             prefab.GetComponent<MeshRenderer>().sharedMaterial = material;
 
             PrefabUtility.SaveAsPrefabAsset(prefab, path + "/Prefab_" + i + ".prefab");
@@ -124,7 +126,7 @@ public class AssetCreator {
 
 
     private void CreateCompoundPrefabs(int count) {
-        string path = _rootPath + "/Compound Prefabs";
+        string path = _rootPath + _compoundPrefabFolder;
         Directory.CreateDirectory(path);
 
         for (int i = 0; i < count; i++) {
@@ -134,7 +136,7 @@ public class AssetCreator {
             int prefabCount = Random.Range(1, 5);
             for (int j = 0; j < prefabCount; j++) {
                 int prefabIndex = (i + j) % count;
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(_rootPath + "/Prefabs/Prefab_" + prefabIndex + ".prefab");
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(_rootPath + _prefabFolder + "/Prefab_" + prefabIndex + ".prefab");
                 GameObject instance = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
                 instance.transform.SetParent(compoundPrefab.transform);
                 instance.transform.localPosition = Random.insideUnitSphere * 5;

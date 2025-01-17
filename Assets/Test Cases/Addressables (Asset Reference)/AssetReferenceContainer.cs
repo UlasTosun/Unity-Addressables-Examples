@@ -9,7 +9,7 @@ public class AssetReferenceContainer : MonoBehaviour, IPrefabLoader {
 
     [SerializeField] private List<AssetReferenceGameObject> _assetReferences = new();
 
-    private AsyncOperationHandle<GameObject> _loadedAsset;
+    private AsyncOperationHandle<GameObject> _loadHandle;
 
 
 
@@ -19,17 +19,17 @@ public class AssetReferenceContainer : MonoBehaviour, IPrefabLoader {
             return;
         }
 
-        if (_loadedAsset.IsValid())
-            Addressables.Release(_loadedAsset);
+        if (_loadHandle.IsValid())
+            Addressables.Release(_loadHandle);
 
-        _loadedAsset = _assetReferences[Random.Range(0, _assetReferences.Count)].InstantiateAsync(transform);
+        _loadHandle = _assetReferences[Random.Range(0, _assetReferences.Count)].InstantiateAsync(transform);
     }
 
 
 
     void OnDestroy() {
-        if (_loadedAsset.IsValid())
-            Addressables.Release(_loadedAsset);
+        if (_loadHandle.IsValid())
+            Addressables.Release(_loadHandle);
     }
 
 
