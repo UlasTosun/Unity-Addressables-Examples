@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PrefabContainer : MonoBehaviour, IPrefabLoader {
 
+    [Header("References")]
+    [Tooltip("List of prefabs to load.")]
     [SerializeField] private List<GameObject> _prefabs = new();
 
     private GameObject _loadedPrefab;

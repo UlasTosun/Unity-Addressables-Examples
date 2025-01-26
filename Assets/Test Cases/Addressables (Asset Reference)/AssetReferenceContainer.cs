@@ -7,6 +7,8 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class AssetReferenceContainer : MonoBehaviour, IPrefabLoader {
 
+    [Header("References")]
+    [Tooltip("List of asset references to load.")]
     [SerializeField] private List<AssetReferenceGameObject> _assetReferences = new();
 
     private AsyncOperationHandle<GameObject> _loadHandle;
